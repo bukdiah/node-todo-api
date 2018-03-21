@@ -9,6 +9,7 @@ var {mongoose} = require('./db/mongoose.js');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
+var {ObjectID} = require('mongodb');
 // Server.js is now only responsible for our routes
 
 var app = express();
@@ -41,6 +42,30 @@ app.get('/todos', (req, res) => {
   }, (e) => {
     res.status(400).send(e);
   });
+});
+
+// GET /todos/1234567  get specific todo
+// Replaces :id with the parameter passed into the URL
+app.get('/todos/:id', (req, res) => {
+  var id = req.params.id;
+  
+  // Validate id
+  if (!ObjectID.isValid(id)) {
+    console.log('ID not valid');
+    return res.status(404).send({});
+  } else {
+    Todo.findById(id).then((todo) => {
+      if (!todo) {
+        return res.status(404).send({});
+      } else {
+        return res.status(200).send({todo: todo});
+      }
+
+    }, (e)=> {
+      res.status(400).send({});
+    });
+  }
+  //res.send(req.params);
 });
 
 app.listen(3000, () => {
