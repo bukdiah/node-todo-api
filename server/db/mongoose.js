@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 
 //Use default promise as opposed to 3rd party
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/TodoApp');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/TodoApp');
 
 // Make mongoose variable available to everyone
 module.exports = {

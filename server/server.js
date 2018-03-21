@@ -13,6 +13,7 @@ var {ObjectID} = require('mongodb');
 // Server.js is now only responsible for our routes
 
 var app = express();
+const port = process.env.PORT || 3000;
 
 // Configure the Middleware
 // can now send JSON to our express app
@@ -66,8 +67,8 @@ app.get('/todos/:id', (req, res) => {
   //res.send(req.params);
 });
 
-app.listen(3000, () => {
-  console.log('Started on port 3000');
+app.listen(port, () => {
+  console.log('Started on port '+port);
 });
 
 module.exports = {app};
