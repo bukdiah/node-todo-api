@@ -1,7 +1,9 @@
-var express = require('express');
+const _ = require('lodash');
+
+const express = require('express');
 
 // Parses HTML body into JSON Object
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 
 // ES6 destructuring
 // Importing our custom made mongoose, todo, and user libraries
@@ -9,7 +11,7 @@ var {mongoose} = require('./db/mongoose.js');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
-var {ObjectID} = require('mongodb');
+const {ObjectID} = require('mongodb');
 // Server.js is now only responsible for our routes
 
 var app = express();
@@ -87,6 +89,35 @@ app.delete('/todos/:id', (req, res) => {
   });
 
 
+});
+
+// UPDATE Route using HTTP PATCH method (updating resources)
+app.patch('/todos/:id', (req, res) => {
+  var id = req.params.id;
+  var body = _.pick(req.body, ['text', 'completed']);
+
+  console.log(id);
+  if (!ObjectID.isValid(id)) {
+    console.log('ID is invalid')
+    return res.status(404).send();
+  }
+
+  if (_.isBoolean(body.completed) && body.completed) {
+    body.completedAt = new Date().getTime();
+  } else {
+    body.completed = false;
+    body.completedAt = null;
+  }
+
+  Todo.findByIdAndUpdate(id, {$set: body}, {new: true}).then((todo) => {
+    if (!todo) {
+      return res.status(404).send();
+    }
+
+    res.send({todo});
+  }).catch((e) => {
+    res.status(400).send();
+  })
 });
 
 app.listen(port, () => {
