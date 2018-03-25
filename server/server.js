@@ -15,7 +15,7 @@ const {ObjectID} = require('mongodb');
 // Server.js is now only responsible for our routes
 
 var app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 // Configure the Middleware
 // can now send JSON to our express app
