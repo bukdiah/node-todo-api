@@ -1,3 +1,5 @@
+require('./config/config');
+
 const _ = require('lodash');
 
 const express = require('express');
@@ -7,7 +9,7 @@ const bodyParser = require('body-parser');
 
 // ES6 destructuring
 // Importing our custom made mongoose, todo, and user libraries
-var {mongoose} = require('./db/mongoose.js');
+var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
@@ -17,6 +19,7 @@ const {ObjectID} = require('mongodb');
 var app = express();
 const port = process.env.PORT;
 
+console.log("PORT IS -> ", port)
 // Configure the Middleware
 // can now send JSON to our express app
 app.use(bodyParser.json());
@@ -118,6 +121,23 @@ app.patch('/todos/:id', (req, res) => {
   }).catch((e) => {
     res.status(400).send();
   })
+});
+
+// POST /users CREATE new users
+app.post('/users', (req, res) => {
+
+  var body = _.pick(req.body, ['email', 'password']);
+  
+  var user = new User(body);
+
+  user.save().then(() => {
+    return user.generateAuthToken();
+  }).then((token) => {
+    // x-auth is a custom header
+    res.header('x-auth', token).send(user);
+  }).catch((e)=>{
+    res.status(400).send(e);
+  });
 });
 
 app.listen(port, () => {
