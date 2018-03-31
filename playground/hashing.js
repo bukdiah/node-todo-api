@@ -1,6 +1,24 @@
 const {SHA256} = require('crypto-js');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
+var password = '123abc!';
+
+// Gensalt ...makes a salt
+/*
+bcrypt.genSalt(10, (err, salt) => {
+  bcrypt.hash(password, salt, (err, hash) => {
+    console.log(hash);
+  });
+});
+*/
+var hashedPassword = "$2a$10$qehjeVh5r67l7rG8g05bluJzLD5Yk3QNVt7XQF63RjY.PmMae.fO2";
+
+// takes plan val and hash val and tells you if they are equal
+bcrypt.compare(password, hashedPassword, (err, res) => {
+  console.log(res);
+});
+/*
 var data = {
   id: 10
 };
@@ -12,6 +30,7 @@ console.log(token);
 // takes the token and secret and ensures data wasnt manipulated
 var decoded = jwt.verify(token, '123abc');
 console.log(decoded)
+*/
 /*
 var message = 'I am user number 3';
 var hash = SHA256(message).toString();
