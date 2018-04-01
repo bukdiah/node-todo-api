@@ -20,7 +20,6 @@ const {ObjectID} = require('mongodb');
 var app = express();
 const port = process.env.PORT;
 
-console.log("PORT IS -> ", port)
 // Configure the Middleware
 // can now send JSON to our express app
 app.use(bodyParser.json());
@@ -77,7 +76,6 @@ app.delete('/todos/:id', (req, res) => {
   //get the id
   var id = req.params.id;
   // validate the id -> not valid? return 404
-  console.log('id = ',id);
   if (!ObjectID.isValid(id)) {
     console.log('ID not valid');
     return res.status(404).send();
@@ -91,8 +89,6 @@ app.delete('/todos/:id', (req, res) => {
   }).catch((e) => {
     return res.status(400).send();
   });
-
-
 });
 
 // UPDATE Route using HTTP PATCH method (updating resources)
@@ -100,7 +96,6 @@ app.patch('/todos/:id', (req, res) => {
   var id = req.params.id;
   var body = _.pick(req.body, ['text', 'completed']);
 
-  console.log(id);
   if (!ObjectID.isValid(id)) {
     console.log('ID is invalid')
     return res.status(404).send();
