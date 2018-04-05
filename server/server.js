@@ -15,6 +15,7 @@ var {User} = require('./models/user');
 var {authenticate} = require('./middleware/authenticate');
 
 const {ObjectID} = require('mongodb');
+
 // Server.js is now only responsible for our routes
 
 var app = express();
@@ -141,6 +142,22 @@ app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
 });
 
+// POST /users/login sends {email, password} in body
+app.post('/users/login', (req, res) => {
+  // Search for user that has matching email
+  // as well as user with a hashedpassword that matches the plain password sent
+
+  var body = _.pick(req.body, ['email', 'password']);
+  
+  User.findByCredentials(body.email, body.password).then((user) => {
+    // if we find the user...generate an auth token
+    user.generateAuthToken().then((token) => {
+      res.header('x-auth', token).send(user);
+    });
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
 app.listen(port, () => {
   console.log('Started on port '+port);
 });
