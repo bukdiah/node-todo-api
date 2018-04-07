@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 
+// TODOs are now associated with whatever user created them
+// _creator identifies the user
 var Todo = mongoose.model('Todo', {
   text: {
     type: String,
@@ -14,6 +16,10 @@ var Todo = mongoose.model('Todo', {
   completedAt: {
     type: Number,
     default: null
+  },
+  _creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
   }
 });
 
